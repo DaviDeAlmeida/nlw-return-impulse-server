@@ -1,7 +1,11 @@
 import express from 'express'
 
-const test = 1;
+const app = express();
 
-async function assa() {
-    return 'ok'
-}
+app.get('/users', (req,res) => {
+    return res.send('Hello World!');
+})
+
+app.listen(3333, () => {
+    console.log('HTTP server running');
+});
