@@ -189,15 +189,22 @@ Tests: 4 passed  ·  Coverage: 100% statements
 
 ## ☁️ Deploy
 
-A API já está pronta para plataformas como **Render**, **Railway** ou **Fly.io**:
+O projeto inclui um [Blueprint do Render](https://render.com/docs/infrastructure-as-code) (`render.yaml`) que configura o serviço no plano gratuito:
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/DaviDeAlmeida/nlw-return-impulse-server)
+
+Ao clicar, o Render pede apenas as variáveis secretas (`MAIL_USER`, `MAIL_PASS` e `MAIL_TO`). O resto já vem configurado:
 
 | Configuração | Valor |
 | --- | --- |
-| Build command | `npm install && npm run build` |
-| Start command | `npm start` |
+| Build command | `npm ci && npm run build` |
+| Start command | `npm start` (aplica as migrations e sobe a API) |
 | Health check | `/health` |
+| Node.js | 24 (`.node-version`) |
 
-Lembre de cadastrar as variáveis de ambiente da tabela acima no painel da plataforma.
+Para outras plataformas (Railway, Fly.io, Koyeb), use os mesmos comandos e cadastre as variáveis de ambiente da tabela acima.
+
+> ⚠️ No plano gratuito do Render, a API "dorme" após 15 min sem uso (a primeira requisição depois disso leva ~30–60 s) e o disco não é persistente, então o SQLite é recriado a cada deploy.
 
 > 💡 Em produção, o recomendado é trocar o SQLite por PostgreSQL: basta mudar o `provider` em `prisma/schema.prisma` e a `DATABASE_URL`.
 

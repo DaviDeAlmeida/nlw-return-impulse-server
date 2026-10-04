@@ -1,0 +1,26 @@
+services:
+  - type: web
+    runtime: node
+    name: nlw-return-impulse-server
+    plan: free
+    region: virginia
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: DATABASE_URL
+        value: file:./dev.db
+      - key: MAIL_HOST
+        value: sandbox.smtp.mailtrap.io
+      - key: MAIL_PORT
+        value: "2525"
+      - key: MAIL_FROM
+        value: Equipe Feedget <oi@feedget.com>
+      - key: MAIL_USER
+        sync: false
+      - key: MAIL_PASS
+        sync: false
+      - key: MAIL_TO
+        sync: false
