@@ -14,6 +14,11 @@
 </p>
 
 <p align="center">
+  <a href="https://feedget-davidealmeida.vercel.app"><strong>🔗 Ver demo ao vivo</strong></a> ·
+  <a href="https://nlw-return-impulse-server.onrender.com/health"><strong>🩺 Status da API</strong></a>
+</p>
+
+<p align="center">
   <a href="#-sobre">Sobre</a> •
   <a href="#-arquitetura">Arquitetura</a> •
   <a href="#-tecnologias">Tecnologias</a> •
