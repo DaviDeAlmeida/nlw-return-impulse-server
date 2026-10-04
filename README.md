@@ -35,7 +35,8 @@ Este repositório é o **back-end** do Feedget. O front-end (React + Tailwind) e
 - Recebe feedbacks dos tipos `BUG`, `IDEA` e `OTHER`, com comentário e screenshot opcional (base64)
 - Valida os dados na camada de caso de uso, antes de qualquer efeito colateral
 - Persiste o feedback em banco via **Prisma ORM**
-- Envia um e-mail HTML para a equipe com o conteúdo e a imagem anexada
+- Envia um e-mail HTML para a equipe com o conteúdo e a imagem anexada (com escape de HTML)
+- Se o e-mail falhar ou não estiver configurado, o feedback é salvo do mesmo jeito
 
 Projeto desenvolvido durante o **NLW Return (trilha Impulse)** da Rocketseat e evoluído depois com configuração via variáveis de ambiente, health check, tratamento de erros e scripts de build para produção.
 
@@ -114,7 +115,7 @@ Content-Type: application/json
 
 | Status | Quando |
 | --- | --- |
-| `201 Created` | Feedback salvo e e-mail enviado |
+| `201 Created` | Feedback salvo (e e-mail enviado, se o SMTP estiver configurado) |
 | `400 Bad Request` | Dados inválidos, ex.: `{ "error": "Comment is required" }` |
 
 ## 💻 Como rodar
@@ -157,7 +158,7 @@ A API ficará disponível em **http://localhost:3333**.
 | `MAIL_PORT` | Porta SMTP | `2525` |
 | `MAIL_USER` / `MAIL_PASS` | Credenciais SMTP | (do Mailtrap) |
 | `MAIL_FROM` | Remetente | `Equipe Feedget <oi@feedget.com>` |
-| `MAIL_TO` | Quem recebe os feedbacks | `Você <voce@email.com>` |
+| `MAIL_TO` | Quem recebe os feedbacks (vazio = e-mail desativado) | `Você <voce@email.com>` |
 
 ### Scripts
 
@@ -183,8 +184,10 @@ PASS  src/use-cases/submit-feedback-use-case.spec.ts
     ✓ should not be able to submit feedback without type
     ✓ should not be able to submit feedback without comment
     ✓ should not be able to submit feedback with an invalid screenshot
+    ✓ should still submit the feedback when sending the e-mail fails
+    ✓ should escape HTML from the comment in the e-mail body
 
-Tests: 4 passed  ·  Coverage: 100% statements
+Tests: 6 passed  ·  Coverage: 100%
 ```
 
 ## ☁️ Deploy
@@ -193,7 +196,7 @@ O projeto inclui um [Blueprint do Render](https://render.com/docs/infrastructure
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/DaviDeAlmeida/nlw-return-impulse-server)
 
-Ao clicar, o Render pede apenas as variáveis secretas (`MAIL_USER`, `MAIL_PASS` e `MAIL_TO`). O resto já vem configurado:
+Ao clicar, o Render pede as variáveis de e-mail (`MAIL_USER`, `MAIL_PASS` e `MAIL_TO`). Elas são **opcionais**: se `MAIL_TO` ficar vazio, a API funciona normalmente, só sem enviar e-mail. O resto já vem configurado:
 
 | Configuração | Valor |
 | --- | --- |
@@ -218,5 +221,5 @@ Para outras plataformas (Railway, Fly.io, Koyeb), use os mesmos comandos e cadas
 ---
 
 <p align="center">
-  Feito por <a href="https://github.com/DaviDeAlmeida"><strong>Davi Cardoso</strong></a> durante o NLW Return · Rocketseat 🚀
+  Feito por <a href="https://github.com/DaviDeAlmeida"><strong>Davi Cardoso</strong></a>
 </p>

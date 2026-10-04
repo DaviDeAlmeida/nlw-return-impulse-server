@@ -34,15 +34,29 @@ constructor(
             screenshot,
         })
 
-        await this.mailAdapter.sendMail({
-            subject: 'Novo Feedback',
-            body: [
-                '<div style="font-family: sans-serif; font-size: 16px; color: #111;">',
-                `<p>Tipo do feedback: ${type}</p>`,
-                `<p>Comentário: ${comment}</p>`,
-                screenshot ? `<img src ="${screenshot}"/>` : '',
-                '</div>'
-            ].join('\n')
-        })
+        // O feedback já foi salvo: uma falha no e-mail não deve derrubar a requisição
+        try {
+            await this.mailAdapter.sendMail({
+                subject: 'Novo Feedback',
+                body: [
+                    '<div style="font-family: sans-serif; font-size: 16px; color: #111;">',
+                    `<p>Tipo do feedback: ${escapeHtml(type)}</p>`,
+                    `<p>Comentário: ${escapeHtml(comment)}</p>`,
+                    screenshot ? `<img src ="${escapeHtml(screenshot)}"/>` : '',
+                    '</div>'
+                ].join('\n')
+            })
+        } catch (err) {
+            console.error('Failed to send feedback e-mail:', err);
+        }
     }
+}
+
+function escapeHtml(value: string) {
+    return value
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
 }

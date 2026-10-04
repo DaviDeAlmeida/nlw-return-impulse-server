@@ -46,4 +46,28 @@ describe('Submit feedback', () => {
         })).rejects.toThrow();
 
     });
+
+    it('should still submit the feedback when sending the e-mail fails', async () => {
+        sendMailSpy.mockRejectedValueOnce(new Error('SMTP down'));
+        jest.spyOn(console, 'error').mockImplementationOnce(() => {});
+
+        await expect(submitFeedback.execute({
+            type: 'BUG',
+            comment: 'example comment',
+        })).resolves.not.toThrow();
+
+        expect(createFeedbackSpy).toHaveBeenCalled();
+    });
+
+    it('should escape HTML from the comment in the e-mail body', async () => {
+        await submitFeedback.execute({
+            type: 'BUG',
+            comment: '<script>alert(1)</script>',
+        });
+
+        const { body } = sendMailSpy.mock.calls[0][0];
+
+        expect(body).not.toContain('<script>');
+        expect(body).toContain('&lt;script&gt;');
+    });
 });
