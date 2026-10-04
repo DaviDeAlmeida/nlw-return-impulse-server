@@ -5,6 +5,10 @@ import { NodemailerMailAdapter } from './adapters/nodemailer/nodemailer-mail-ada
 
 export const routes = express.Router()
 
+routes.get('/health', (req, res) => {
+    return res.json({ status: 'ok' });
+})
+
 routes.post('/feedbacks', async (req,res) => {
     const {type, comment, screenshot } = req.body;
 
@@ -16,11 +20,15 @@ routes.post('/feedbacks', async (req,res) => {
         nodemailerMailAdapter,
     )
 
-    await submitFeedbackUseCase.execute({
-        type,
-        comment,
-        screenshot,
-    })
+    try {
+        await submitFeedbackUseCase.execute({
+            type,
+            comment,
+            screenshot,
+        })
+    } catch (err) {
+        return res.status(400).json({ error: (err as Error).message });
+    }
 
     return res.status(201).send();
 })

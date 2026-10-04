@@ -38,7 +38,7 @@ describe('Submit feedback', () => {
 
     });
 
-    it('should not be able to submit feedback wit an invalid screenshot', async () => {
+    it('should not be able to submit feedback with an invalid screenshot', async () => {
         await expect(submitFeedback.execute({
             type: 'BUG',
             comment: 'example comment',
